@@ -10,7 +10,6 @@ class Http {
   }
 
   static Future<HttpResponse> read(String url) async {
-    print(url);
     var response = await http.get(Uri.parse(url));
     return HttpResponse.fromHttpPackageResponse(response);
   }
@@ -20,7 +19,7 @@ class Http {
     dynamic body,
     Map<String, String>? headers,
   }) async {
-    return Http.store(url);
+    return Http.store(handleUri(url), body: body, headers: headers);
   }
 
   static Future<HttpResponse> store(
@@ -28,9 +27,8 @@ class Http {
     dynamic body,
     Map<String, String>? headers,
   }) async {
-    var response =
-        await http.post(Uri.parse(url), body: body, headers: headers);
-    return HttpResponse.fromHttpPackageResponse(response);
+    var r = await http.post(Uri.parse(url), body: body, headers: headers);
+    return HttpResponse.fromHttpPackageResponse(r);
   }
 
   String handleUri(String? url) {
@@ -80,9 +78,12 @@ class HttpResponse {
               ? HttpResponseStatus.success
               : HttpResponseStatus.error);
 
-
   @override
   String toString() {
-    return 'HttpResponse: ${{'data': data.toString(), 'status': status, 'code': code}}';
+    return 'HttpResponse: ${{
+      'data': data.toString(),
+      'status': status,
+      'code': code
+    }}';
   }
 }

@@ -47,7 +47,14 @@ class _MyHomePageState extends State<MyHomePage> {
       _counter++;
     });
     Api api = Api.getInstance();
+    var response1 = await api.post('orphanages', body: {
+      'name': 'Orphanage Test',
+      'about': 'About Orphanage Test',
+      'cellphone': '5562982866997'
+    });
+    print(response1);
     var response = await api.get('orphanages');
+    print(response);
   }
 
   @override
