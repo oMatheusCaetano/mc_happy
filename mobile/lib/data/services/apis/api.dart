@@ -1,4 +1,4 @@
-import 'package:mc_happy/core/data/services/http.dart';
+import 'package:mc_happy/data/services/http.dart';
 
 class Api extends Http {
   static Api? _instance;

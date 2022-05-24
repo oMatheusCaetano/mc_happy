@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mc_happy/core/data/services/apis/api.dart';
-import 'package:mc_happy/core/data/services/http.dart';
+import 'package:mc_happy/data/repositories/orphanage_repository.dart';
 
 void main() {
   runApp(const MyApp());
@@ -46,15 +45,13 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _counter++;
     });
-    Api api = Api.getInstance();
-    var response1 = await api.post('orphanages', body: {
-      'name': 'Orphanage Test',
-      'about': 'About Orphanage Test',
-      'cellphone': '5562982866997'
+    var item = await OrphanageRepository().create({
+      'name': 'Hello World',
+      'cellphone': null,
     });
-    print(response1);
-    var response = await api.get('orphanages');
-    print(response);
+    print(item);
+    var orphanages = await OrphanageRepository().all();
+    print(orphanages);
   }
 
   @override

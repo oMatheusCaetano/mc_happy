@@ -20,7 +20,9 @@ class OrphanageController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        return response()->json(Orphanage::create($request->all()), 201);
+        $orphanage = Orphanage::create($request->all());
+        $orphanage->refresh();
+        return response()->json($orphanage, 201);
     }
 
     public function update(int $id, Request $request): JsonResponse

@@ -1,34 +1,32 @@
-import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:dio/dio.dart';
 
 class Http {
   String? url;
 
   Http({this.url});
 
-  Future<HttpResponse> get(String? url) async {
-    return Http.read(handleUri(url));
-  }
+  Future<HttpResponse> get(String? url) async => Http.read(handleUri(url));
 
   static Future<HttpResponse> read(String url) async {
-    var response = await http.get(Uri.parse(url));
-    return HttpResponse.fromHttpPackageResponse(response);
+    var response = await Dio().get(url);
+    return HttpResponse.from(response);
   }
 
   Future<HttpResponse> post(
     String url, {
     dynamic body,
     Map<String, String>? headers,
-  }) async {
-    return Http.store(handleUri(url), body: body, headers: headers);
-  }
+  }) async =>
+      Http.store(handleUri(url), body: body, headers: headers);
 
   static Future<HttpResponse> store(
     String url, {
     dynamic body,
     Map<String, String>? headers,
   }) async {
-    var r = await http.post(Uri.parse(url), body: body, headers: headers);
-    return HttpResponse.fromHttpPackageResponse(r);
+    var response = await Dio().post(url, data: body);
+    return HttpResponse.from(response);
   }
 
   String handleUri(String? url) {
@@ -66,17 +64,21 @@ enum HttpResponseStatus {
 
 class HttpResponse {
   final dynamic data;
-  final HttpResponseStatus status;
+  late final HttpResponseStatus status;
   final int code;
 
-  HttpResponse({this.data, required this.status, required this.code});
-  factory HttpResponse.fromHttpPackageResponse(http.Response response) =>
-      HttpResponse(
-          data: response.body,
-          code: response.statusCode,
-          status: (response.statusCode >= 200) && (response.statusCode <= 299)
-              ? HttpResponseStatus.success
-              : HttpResponseStatus.error);
+  HttpResponse({this.data, HttpResponseStatus? status, required this.code});
+  factory HttpResponse.from(Response response) {
+    int sCode = response.statusCode ?? 0;
+
+    return HttpResponse(
+      data: response.data,
+      code: sCode,
+      status: (sCode >= 200) && (sCode <= 299)
+          ? HttpResponseStatus.success
+          : HttpResponseStatus.error,
+    );
+  }
 
   @override
   String toString() {
