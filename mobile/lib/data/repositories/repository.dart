@@ -8,9 +8,9 @@ abstract class Repository<T extends Model> {
     this.api = api ?? Api.getInstance();
   }
 
-  Future<Iterable<T>> all() async {
+  Future<List<T>> all() async {
     var response = await api.get(apiResourceEndpoint());
-    return (response.data as List<dynamic>).map(modelFromJson);
+    return List.from((response.data as List<dynamic>).map(modelFromJson));
   }
 
   Future<T> create(dynamic data) async {
